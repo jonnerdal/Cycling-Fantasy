@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { NextRequest, NextResponse } from "next/server";
 import clientPromise from "@/lib/mongodb"; // your MongoDB client setup
 
