@@ -2,9 +2,9 @@ import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import clientPromise from "@/lib/mongodb";
 import bcrypt from "bcrypt";
-import type { AuthOptions } from "next-auth";
+import type { NextAuthOptions } from "next-auth";
 
-export const authOptions: AuthOptions = {
+export const authOptions: NextAuthOptions = {
   providers: [
     CredentialsProvider({
       name: "Credentials",
@@ -22,7 +22,7 @@ export const authOptions: AuthOptions = {
 
         const user = await db.collection("users").findOne({
           $or: [
-            { email: identifier.toLowerCase() }, // always lowercase email
+            { email: identifier.toLowerCase() },
             { username: identifier },
           ],
         });
@@ -33,18 +33,27 @@ export const authOptions: AuthOptions = {
         if (!isValid) return null;
 
         return { id: user._id.toString(), name: user.username, email: user.email };
-      }
-,
+      },
     }),
   ],
-  session: {
-    strategy: "jwt",
+  session: { strategy: "jwt" },
+  callbacks: {
+    async jwt({ token, user }) {
+      if (user?.id) token.id = user.id;
+      return token;
+    },
+    async session({ session, token }) {
+      return {
+        ...session,
+        user: {
+          ...session.user,
+          id: token.id, // <-- ensures session.user.id exists
+        },
+      };
+    },
   },
-  pages: {
-    signIn: "/login",
-  },
+  pages: { signIn: "/login" },
 };
 
 const handler = NextAuth(authOptions);
-
 export { handler as GET, handler as POST };

@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { signOut } from "next-auth/react";
 
 type Rider = {
   _id: string;
@@ -21,7 +22,7 @@ export default function MyTeamPage() {
   const [team, setTeam] = useState<(Rider | null)[]>([]);
 
   useEffect(() => {
-    fetch("/api/my-team", { headers: { "x-user-id": "1" } })
+    fetch("/api/my-team")
       .then(res => res.json())
       .then(data => {
         if (data.team) {
@@ -62,11 +63,19 @@ export default function MyTeamPage() {
 
         <div className="flex justify-between items-center mb-4">
           <h1 className="text-2xl font-bold">{teamName || "My Team"}</h1>
-          <Link href="/home">
-            <button className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600">
-              Home
+          <div className="flex gap-2">
+            <Link href="/home">
+              <button className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600">
+                Home
+              </button>
+            </Link>
+            <button
+              onClick={() => signOut()}
+              className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
+            >
+              Logout
             </button>
-          </Link>
+          </div>
         </div>
 
         {CATEGORIES.map(type => renderTeamList(team.filter(r => r?.rider_type === type), type))}

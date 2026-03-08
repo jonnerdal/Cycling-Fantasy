@@ -1,15 +1,14 @@
-// app/api/my-team/route.ts
 export const dynamic = "force-dynamic";
 
 import { NextResponse } from "next/server";
 import clientPromise from "@/lib/mongodb";
 import { getServerSession } from "next-auth/next";
-import { authOptions } from "../auth/[...nextauth]/route"; // adjust path if needed
+import { authOptions } from "../auth/[...nextauth]/route";
 
 type Rider = {
   _id: string;
   name: string;
-  rider_type: string; // "captain" | "youth"
+  rider_type: string;
   team_name: string;
   team_code: string;
   team_jersey: string;
@@ -20,7 +19,7 @@ type Team = {
   riders: (Rider | null)[];
 };
 
-// GET handler
+// GET handler — fetch current user's team
 export async function GET() {
   const session = await getServerSession(authOptions);
   if (!session?.user?.id) {
@@ -35,11 +34,11 @@ export async function GET() {
   const team = await db.collection("teams").findOne({ userId });
 
   return NextResponse.json({
-    team: team || { teamName: "", riders: Array(13).fill(null) },
+    team: team || { teamName: "", riders: Array(12).fill(null) },
   });
 }
 
-// POST handler
+// POST handler — save/update current user's team
 export async function POST(req: Request) {
   const session = await getServerSession(authOptions);
   if (!session?.user?.id) {
@@ -47,28 +46,34 @@ export async function POST(req: Request) {
   }
 
   const userId = session.user.id;
-
-  const body = await req.json();
-  const { teamName, riders } = body as Team;
-
-  if (!teamName || !riders || !Array.isArray(riders)) {
-    return NextResponse.json({ error: "Invalid team" }, { status: 400 });
-  }
-
-  const normalizedRiders = [...riders];
-  while (normalizedRiders.length < 13) normalizedRiders.push(null);
-
   const client = await clientPromise;
   const db = client.db("cycling-fantasy");
 
-  await db.collection("teams").updateOne(
-    { userId },
-    { $set: { teamName, riders: normalizedRiders } },
-    { upsert: true }
-  );
+  try {
+    const body = await req.json();
+    const { teamName, riders } = body as Team;
 
-  return NextResponse.json({
-    message: "Team saved successfully!",
-    team: { teamName, riders: normalizedRiders },
-  });
+    if (!teamName || !riders || !Array.isArray(riders)) {
+      return NextResponse.json({ error: "Invalid team data" }, { status: 400 });
+    }
+
+    // Normalize array length
+    const normalizedRiders = [...riders];
+    while (normalizedRiders.length < 12) normalizedRiders.push(null);
+
+    // Save or update
+    await db.collection("teams").updateOne(
+      { userId },
+      { $set: { teamName, riders: normalizedRiders } },
+      { upsert: true }
+    );
+
+    return NextResponse.json({
+      message: "Team saved successfully",
+      team: { teamName, riders: normalizedRiders },
+    });
+  } catch (err) {
+    console.error("Error saving team:", err);
+    return NextResponse.json({ error: "Server error" }, { status: 500 });
+  }
 }

@@ -13,29 +13,46 @@ export default function LoginPage() {
     setError("");
 
     const form = e.currentTarget;
-    const identifier = (form.elements.namedItem("identifier") as HTMLInputElement)
-      .value;
+
+    const identifier = (form.elements.namedItem("identifier") as HTMLInputElement).value;
     const password = (form.elements.namedItem("password") as HTMLInputElement).value;
 
-    // Use NextAuth signIn with credentials provider
-    const res = await signIn("credentials", {
-      redirect: false,
-      identifier,
-      password,
-    });
+    try {
+      const res = await signIn("credentials", {
+        redirect: false,
+        identifier,
+        password,
+      });
 
-    if (res?.error) {
-      setError(res.error);
-    } else {
-      // Successful login → go to home page
+      if (!res) {
+        setError("Something went wrong. Please try again.");
+        return;
+      }
+
+      if (res.error) {
+        // Only show credential errors
+        if (res.error === "CredentialsSignin") {
+          setError("Invalid username/email or password");
+        } else {
+          setError("Something went wrong. Please try again.");
+        }
+        return;
+      }
+
+      // Successful login
       router.push("/home");
+
+    } catch {
+      setError("Something went wrong. Please try again.");
     }
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
       <div className="w-full max-w-md bg-white rounded-2xl shadow p-6">
-        <h1 className="text-2xl font-bold text-center mb-6">Login to Cycling Fantasy</h1>
+        <h1 className="text-2xl font-bold text-center mb-6">
+          Login to Cycling Fantasy
+        </h1>
 
         <form className="space-y-4" onSubmit={handleSubmit}>
           <input
@@ -45,6 +62,7 @@ export default function LoginPage() {
             required
             className="w-full px-4 py-2 border rounded-lg"
           />
+
           <input
             name="password"
             type="password"
@@ -52,6 +70,7 @@ export default function LoginPage() {
             required
             className="w-full px-4 py-2 border rounded-lg"
           />
+
           <button
             type="submit"
             className="w-full bg-black text-white py-2 rounded-lg hover:bg-gray-800"
@@ -60,7 +79,11 @@ export default function LoginPage() {
           </button>
         </form>
 
-        {error && <p className="mt-4 text-center text-red-600">{error}</p>}
+        {error && (
+          <p className="mt-4 text-center text-red-600">
+            {error}
+          </p>
+        )}
 
         <p className="mt-6 text-center text-sm">
           Don’t have an account?{" "}

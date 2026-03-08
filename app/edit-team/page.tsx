@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { signOut } from "next-auth/react";
 
 type Rider = {
   _id: string;
@@ -32,12 +33,14 @@ export default function EditTeamPage() {
   const [teamName, setTeamName] = useState("");
   const [nameError, setNameError] = useState("");
 
+  const CATEGORIES: Rider["rider_type"][] = ["captain", "youth", "climber", "sprinter", "one day rider", "domestique"];
+
   useEffect(() => {
     fetch("/api/riders")
       .then(res => res.json())
       .then(data => setRiders(data.riders));
 
-    fetch("/api/my-team", { headers: { "x-user-id": "1" } })
+    fetch("/api/my-team")
       .then(res => res.json())
       .then(data => {
         if (data.team) {
@@ -47,11 +50,8 @@ export default function EditTeamPage() {
       });
   }, []);
 
-  const countTeamRiders = (teamCode: string) =>
-    team.filter(r => r?.team_code === teamCode).length;
-
-  const countCategory = (type: Rider["rider_type"]) =>
-    team.filter(r => r?.rider_type === type).length;
+  const countTeamRiders = (teamCode: string) => team.filter(r => r?.team_code === teamCode).length;
+  const countCategory = (type: Rider["rider_type"]) => team.filter(r => r?.rider_type === type).length;
 
   const handleAdd = (rider: Rider) => {
     if (team.some(r => r?._id === rider._id)) return;
@@ -74,30 +74,70 @@ export default function EditTeamPage() {
 
   const handleSave = async () => {
     if (!teamName.trim()) {
-      setNameError("Team name is required.");
+      setNameError("Team name is required");
       return;
     }
 
     for (const type in CATEGORY_REQUIREMENTS) {
       if (countCategory(type as Rider["rider_type"]) !== CATEGORY_REQUIREMENTS[type as Rider["rider_type"]]) {
-        alert(`You must select exactly ${CATEGORY_REQUIREMENTS[type as Rider["rider_type"]]} ${type}(s).`);
+        alert(`You must select exactly ${CATEGORY_REQUIREMENTS[type as Rider["rider_type"]]} ${type}(s)`);
         return;
       }
     }
 
-    await fetch("/api/my-team", {
+    const res = await fetch("/api/my-team", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "x-user-id": "1",
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ teamName, riders: team }),
     });
 
-    router.push("/my-team");
+    if (res.ok) router.push("/my-team");
+    else alert("Error saving team");
   };
 
-  const CATEGORIES: Rider["rider_type"][] = ["captain", "youth", "climber", "sprinter", "one day rider", "domestique"];
+  const renderSelectedList = (type: Rider["rider_type"]) => {
+    const requiredCount = CATEGORY_REQUIREMENTS[type];
+    const list = team.filter(r => r?.rider_type === type);
+
+    // Fill with nulls to show empty slots
+    const paddedList = [...list];
+    while (paddedList.length < requiredCount) paddedList.push(null);
+
+    return (
+      <div className="mb-4" key={type}>
+        <h3 className="text-lg font-bold mb-2">{type.charAt(0).toUpperCase() + type.slice(1)}</h3>
+        {paddedList.map((r, index) => (
+          <div
+            key={r?._id || index}
+            className="flex items-center justify-between border p-2 mb-2 rounded bg-gray-50"
+          >
+            {r ? (
+              <>
+                <div className="flex items-center gap-2">
+                  <div className="w-12 h-12 flex items-center justify-center">
+                    <img
+                      src={r.team_jersey.startsWith("/") ? r.team_jersey : "/" + r.team_jersey}
+                      alt={r.team_code}
+                      className="max-w-full max-h-full object-contain"
+                    />
+                  </div>
+                  <span>{r.name} ({r.team_name})</span>
+                </div>
+                <button
+                  onClick={() => handleRemove(team.indexOf(r))}
+                  className="ml-2 bg-red-500 text-white px-2 py-1 rounded"
+                >
+                  Remove
+                </button>
+              </>
+            ) : (
+              <span className="text-gray-400">Empty Slot</span>
+            )}
+          </div>
+        ))}
+      </div>
+    );
+  };
 
   const renderRiderList = (list: Rider[], type: Rider["rider_type"]) => (
     <div className="mb-4" key={`all-${type}`}>
@@ -137,45 +177,6 @@ export default function EditTeamPage() {
     </div>
   );
 
-  const renderSelectedList = (type: Rider["rider_type"]) => {
-    const list = team.filter(r => r?.rider_type === type);
-    return (
-      <div className="mb-4" key={`selected-${type}`}>
-        <h3 className="text-lg font-bold mb-2">{type.charAt(0).toUpperCase() + type.slice(1)}</h3>
-        {list.length === 0 && <span className="text-gray-400">No riders selected</span>}
-        {list.map((r) => (
-          <div
-            key={r?._id}
-            className="flex items-center justify-between border p-2 mb-2 rounded bg-gray-50"
-          >
-            {r ? (
-              <>
-                <div className="flex items-center gap-2">
-                  <div className="w-12 h-12 flex items-center justify-center">
-                    <img
-                      src={r.team_jersey.startsWith("/") ? r.team_jersey : "/" + r.team_jersey}
-                      alt={r.team_code}
-                      className="max-w-full max-h-full object-contain"
-                    />
-                  </div>
-                  <span>{r.name} ({r.team_name})</span>
-                </div>
-                <button
-                  onClick={() => handleRemove(team.indexOf(r))}
-                  className="ml-2 bg-red-500 text-white px-2 py-1 rounded"
-                >
-                  Remove
-                </button>
-              </>
-            ) : (
-              <span className="text-gray-400">Empty Slot</span>
-            )}
-          </div>
-        ))}
-      </div>
-    );
-  };
-
   return (
     <div className="min-h-screen p-4 bg-gray-100">
       <div className="max-w-6xl mx-auto flex gap-8">
@@ -184,11 +185,19 @@ export default function EditTeamPage() {
         <div className="flex-1 bg-white p-6 rounded-xl shadow">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-xl font-bold">Your Team</h2>
-            <Link href="/home">
-              <button className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600">
-                Home
+            <div className="flex gap-2">
+              <Link href="/home">
+                <button className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600">
+                  Home
+                </button>
+              </Link>
+              <button
+                onClick={() => signOut()}
+                className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
+              >
+                Logout
               </button>
-            </Link>
+            </div>
           </div>
 
           <input
