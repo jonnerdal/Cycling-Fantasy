@@ -1,12 +1,15 @@
+// app/api/my-team/route.ts
 export const dynamic = "force-dynamic";
 
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import clientPromise from "@/lib/mongodb";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "../auth/[...nextauth]/route"; // adjust path if needed
 
 type Rider = {
   _id: string;
   name: string;
-  rider_type: string;
+  rider_type: string; // "captain" | "youth"
   team_name: string;
   team_code: string;
   team_jersey: string;
@@ -17,12 +20,14 @@ type Team = {
   riders: (Rider | null)[];
 };
 
-export async function GET(req: NextRequest) {
-  const userId = req.headers.get("x-user-id");
-
-  if (!userId) {
+// GET handler
+export async function GET() {
+  const session = await getServerSession(authOptions);
+  if (!session?.user?.id) {
     return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
   }
+
+  const userId = session.user.id;
 
   const client = await clientPromise;
   const db = client.db("cycling-fantasy");
@@ -34,12 +39,14 @@ export async function GET(req: NextRequest) {
   });
 }
 
-export async function POST(req: NextRequest) {
-  const userId = req.headers.get("x-user-id");
-
-  if (!userId) {
+// POST handler
+export async function POST(req: Request) {
+  const session = await getServerSession(authOptions);
+  if (!session?.user?.id) {
     return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
   }
+
+  const userId = session.user.id;
 
   const body = await req.json();
   const { teamName, riders } = body as Team;
