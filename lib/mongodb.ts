@@ -4,17 +4,18 @@ import { MongoClient } from "mongodb";
 const uri = process.env.MONGODB_URI;
 
 if (!uri) {
-  throw new Error("MONGODB_URI is not defined");
+  throw new Error("Please define the MONGODB_URI environment variable inside Vercel");
 }
-
-const options = {};
 
 let client: MongoClient;
 let clientPromise: Promise<MongoClient>;
 
 declare global {
+  // For development hot reloads
   var _mongoClientPromise: Promise<MongoClient> | undefined;
 }
+
+const options = {};
 
 if (process.env.NODE_ENV === "development") {
   if (!global._mongoClientPromise) {
