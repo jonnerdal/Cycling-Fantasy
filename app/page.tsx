@@ -1,21 +1,71 @@
-// app/page.tsx
-export default function Home() {
+"use client";
+
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { signIn } from "next-auth/react";
+
+export default function LoginPage() {
+  const router = useRouter();
+  const [error, setError] = useState("");
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setError("");
+
+    const form = e.currentTarget;
+    const identifier = (form.elements.namedItem("identifier") as HTMLInputElement).value;
+    const password = (form.elements.namedItem("password") as HTMLInputElement).value;
+
+    const res = await signIn("credentials", {
+      redirect: false,
+      identifier,
+      password,
+    });
+
+    if (res?.error) {
+      setError(res.error);
+    } else {
+      router.push("/home"); // redirect after successful login
+    }
+  };
+
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center bg-zinc-50 dark:bg-black p-8">
-      <h1 className="text-3xl font-bold text-black dark:text-white">
-        My Cycling Fantasy App
-      </h1>
-      <p className="mt-4 text-lg text-zinc-700 dark:text-zinc-300">
-        Your API routes are live! Try:
-      </p>
-      <ul className="mt-2 text-blue-600">
-        <li>
-          <a href="/api/riders">/api/riders</a>
-        </li>
-        <li>
-          <a href="/api/my-team">/api/my-team</a>
-        </li>
-      </ul>
-    </main>
+    <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
+      <div className="w-full max-w-md bg-white rounded-2xl shadow p-6">
+        <h1 className="text-2xl font-bold text-center mb-6">Login to Cycling Fantasy</h1>
+
+        <form className="space-y-4" onSubmit={handleSubmit}>
+          <input
+            name="identifier"
+            type="text"
+            placeholder="Username or Email"
+            required
+            className="w-full px-4 py-2 border rounded-lg"
+          />
+          <input
+            name="password"
+            type="password"
+            placeholder="Password"
+            required
+            className="w-full px-4 py-2 border rounded-lg"
+          />
+          <button
+            type="submit"
+            className="w-full bg-black text-white py-2 rounded-lg hover:bg-gray-800"
+          >
+            Login
+          </button>
+        </form>
+
+        {error && <p className="mt-4 text-center text-red-600">{error}</p>}
+
+        <p className="mt-6 text-center text-sm">
+          Don’t have an account?{" "}
+          <a href="/signup" className="underline">
+            Sign up
+          </a>
+        </p>
+      </div>
+    </div>
   );
 }
