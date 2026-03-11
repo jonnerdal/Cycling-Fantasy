@@ -1,0 +1,154 @@
+Jonas Vingegaard,15.0
+Edoardo Affini,5.4
+Bruno Armirail,6.5
+Victor Campenaerts,7.8
+Wilco Kelderman,8.6
+Davide Piganzoli,6.9
+Axel Zingle,9.1
+Daniel Felipe Martinez,12.4
+Nico Denz,6.6
+Laurence Pithie,7.7
+Callum Thornley,5.0
+Tim Van Dijke,6.6
+Mick Van Dijke,6.6
+Aleksandr Vlasov,12.0
+Oscar Onley,12.3
+Dorian Godon,10.4
+Michal Kwiatkowski,7.8
+Carlos Rodriguez,12.7
+Joshua Tarling,8.8
+Kevin Vauquelin,12.9
+Samuel Watson,6.0
+Brandon McNulty,10.2
+Ivo Oliveira,6.2
+Igor Arrieta,6.4
+Rune Herregodts,6.7
+Nils Politt,8.4
+Pavel Sivakov,10.6
+Marc Soler,9.1
+Juan Ayuso,14.3
+Julien Bernard,6.6
+Lennard Kamna,9.3
+Soren Kragh Andersen,9.0
+Toms Skujins,8.8
+Jakob Soderqvist,5.4
+Mathias Vacek,8.9
+Lenny Martinez,11.9
+Nikias Arndt,6.1
+Phil Bauhaus,8.5
+Damiano Caruso,9.4
+Kamil Gradek,5.0
+Mathijs Paasschens,5.1
+Robert Stannard,7.4
+David Gaudu,11.4
+Remi Cavagna,8.1
+Ewen Costiou,7.2
+Johan Jacobs,6.3
+Rudy Molard,7.5
+Quentin Pacher,6.4
+Clement Russo,6.2
+Ivan Romeo,9.2
+Orluis Aular,8.6
+Pablo Castrillo,7.8
+Jefferson Cepeda,9.5
+Raul Garcia Pierna,7.3
+Michel Hessmann,6.7
+Lorenzo Milesi,8.3
+Valentin Paret-Peintre,9.3
+Steff Cras,8.4
+Pascal Eenkhoorn,7.6
+Casper Pedersen,8.0
+Jasper Stuyven,9.2
+Fabio Van Den Bossche,6.3
+Bert Van Lerberghe,6.1
+Biniam Girmay,10.7
+Lewis Askey,7.0
+Guillaume Boivin,7.2
+Matis Louvel,7.1
+Ryan Mullen,6.0
+Riley Sheehan,6.4
+Tom Van Asbroeck,6.3
+Nicolas Prodhomme,7.5
+Stefan Bissegger,8.5
+Cees Bol,7.4
+Oscar Chamberlain,6.0
+Sander De Pestel,6.1
+Daan Hoole,6.3
+Callum Scotson,6.2
+Pascal Ackermann,8.6
+Robert Donaldson,4.6
+Luke Durbridge,6.5
+Patrick Gamper,6.1
+Luka Mezgec,7.4
+Kelland O'Brien,6.2
+Jasha Sutterlin,5.7
+Harold Tejada,10.0
+Nicola Conci,6.3
+Yevgeniy Fedorov,6.5
+Max Kanter,7.3
+Mike Teunissen,7.7
+Darren Van Bekkum,4.3
+Nicolas Vinokurov,4.4
+Milan Fretin,10.1
+Piet Allegaert,6.5
+Bryan Coquard,9.0
+Ion Izagirre,8.8
+Alex Kirsch,6.7
+Louis Rouland,4.7
+Benjamin Thomas,7.5
+Mathys Rondel,9.6
+Will Barta,6.6
+Marco Haller,7.2
+Petr Kelemen,6.2
+Arthur Kluckers,5.1
+Rick Pluimers,5.4
+Matteo Trentin,9.3
+Juan Guillermo Martinez,5.4
+Timo De Jong,4.8
+Chris Hamilton,7.0
+Niklas Markl,5.2
+Tim Naberman,4.7
+Timo Roosen,5.4
+Casper Van Uden,6.8
+Luke Lamperti,7.6
+Kasper Asgreen,9.0
+Alex Baudin,6.7
+Alastair Mackellar,4.8
+Georg Steinhauser,7.4
+Marijn Van Den Berg,8.2
+Max Walker,4.7
+Andreas Leknessund,9.0
+Sven Erik Bystrom,6.4
+Stian Fredheim,6.1
+William Blume Levy,5.8
+Sakarias Koller Loland,5.7
+Rasmus Tiller,7.8
+Torstein Traeen,8.4
+Eddie Dunbar,10.3
+Fabio Christen,6.5
+Aime De Gendt,6.6
+David De La Cruz,7.8
+Frederik Frison,5.2
+Emmanuel Houcou,4.4
+Nickolas Zukowsky,5.5
+Anthony Turgis,8.1
+Florian Dauphin,4.8
+Joris Delbove,5.1
+Alexandre Delettre,5.0
+Sandy Dujardin,5.0
+Mathis Le Berre,5.2
+Matteo Vercher,5.1
+Jensen Plowright,6.6
+Maurice Ballerstedt,5.8
+Ramses Debruyne,5.4
+Simon Dehairs,6.3
+Lindsay De Vylder,5.6
+Jonas Geens,5.5
+Tim Marsman,5.3
+Milan Menten,8.7
+Vito Braet,6.2
+Joshua Giddings,4.9
+Sebastien Grignard,6.1
+Jonas Rutsch,6.8
+Luca Van Boven,6.0
+Roel Van Sintmaartensdijk,4.7
